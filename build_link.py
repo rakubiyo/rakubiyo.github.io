@@ -68,7 +68,7 @@ PAGE = """<!doctype html><html lang="ja"><head><meta charset="utf-8">
 <style>%(css)s</style></head><body><div class="w">
 <span class="pr">広告（楽天アフィリエイト）</span>
 <div class="head"><img src="%(up)s%(icon)s" alt="">
-<div><h1>%(h1)s</h1><p class="lead" style="margin:4px 0 0">%(tagline)s</p></div></div>
+<div><h1>%(h1)s</h1>%(tagline)s</div></div>
 %(body)s
 <div class="note">
 %(notes)s
@@ -107,8 +107,9 @@ def post_html(p):
     notes.append(n0 + "<br>" + "<br>".join(SITE["notes"][1:]))
     return PAGE % dict(
         title="%s｜%s" % (SITE["name"], p["title"]), css=CSS % {"up": "../../"}, up="../../",
-        icon=SITE["icon"], tagline=esc(SITE["tagline"]),
-        h1="%s<br>%s" % (esc(p["title"]), esc(p["sub"])),
+        icon=SITE["icon"],
+        tagline='<p class="lead" style="margin:4px 0 0">%s</p>' % esc(SITE["name"]),
+        h1=esc(p["title"]),
         body=body, notes="<br><br>".join(notes))
 
 
@@ -118,14 +119,14 @@ def hub_html(posts):
         rows.append(
             '  <a class="pc" href="posts/%s/">\n'
             '    <img src="posts/%s/thumb.jpg" alt="">\n'
-            '    <div><b>%s</b><span class="d">%s ／ %d品 ／ %s</span></div>\n'
+            '    <div><b>%s</b><span class="d">%s ／ %d品</span></div>\n'
             '  </a>' % (p["slug"], p["slug"], esc(p["title"]),
-                        p["date"].replace("-", "."), len(p["items"]), esc(p["sub"])))
+                        p["date"].replace("-", "."), len(p["items"])))
     body = '<p class="lead">%s</p>\n%s' % (esc(SITE["desc"]), "\n".join(rows))
     notes = [head_note(), "<br>".join(SITE["notes"]),
              "出典と集計期間は、それぞれの回のページに書いています。"]
     return PAGE % dict(title=SITE["name"], css=CSS % {"up": ""}, up="",
-                       icon=SITE["icon"], tagline=esc(SITE["tagline"]),
+                       icon=SITE["icon"], tagline="",
                        h1=esc(SITE["name"]), body=body, notes="<br><br>".join(notes))
 
 
