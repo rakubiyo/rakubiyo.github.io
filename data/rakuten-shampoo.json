@@ -1,0 +1,115 @@
+{
+ "slug": "rakuten-shampoo",
+ "date": "2026-09-11",
+ "title": "楽天スーパーSALEで売れたシャンプー",
+ "title_lines": [
+  "楽天スーパーSALEで",
+  "売れたシャンプー"
+ ],
+ "lead": "動画で紹介した6品です。順位は楽天のランキングのまま、歯抜けで出しています。",
+ "omission_note": "シャンプーの単品（同じ商品の複数本・詰め替えを含む）だけを選びました。違う商品を組み合わせたセット、育毛剤、薬用スカルプは外しています。同じブランドは最上位の1つだけにしました。",
+ "source": {
+  "name": "楽天市場 シャンプーランキング（デイリー）",
+  "url": "https://ranking.rakuten.co.jp/daily/210677/",
+  "period": "2026年9月10日の売上です（楽天スーパーSALEの期間中）。今の売れ筋順ではありません。"
+ },
+ "price_note": "（2026年9月11日に楽天の商品ページで確認した価格）",
+ "items": [
+  {
+   "rank": "42位",
+   "brand": "YOLU",
+   "product": "ナイトリペア シャンプー 詰替",
+   "price": "1,210",
+   "size": "詰替",
+   "img": "42.png",
+   "url": "https://item.rakuten.co.jp/kobe-beauty-labo/yol002/",
+   "voices": [
+    "手触りがとろんとする",
+    "元美容師も一番って言ってた",
+    "詰め替えが最後まで吸えない"
+   ],
+   "name": "YOLU ナイトリペア シャンプー 詰替",
+   "copy": "手触りがとろんとする"
+  },
+  {
+   "rank": "22位",
+   "brand": "cocone",
+   "product": "クレイクリームシャンプー",
+   "price": "11,580",
+   "size": "380g×3",
+   "img": "22.png",
+   "url": "https://item.rakuten.co.jp/hugkumi/r_creamshampoo_3set/",
+   "voices": [
+    "トリートメントがいらない",
+    "5年リピしてる人もいる",
+    "1回に使う量が多い"
+   ],
+   "name": "cocone クレイクリームシャンプー",
+   "copy": "トリートメントがいらない"
+  },
+  {
+   "rank": "17位",
+   "brand": "髪にドラマを",
+   "product": "つるりんちょ シャンプー",
+   "price": "9,400",
+   "size": "1000mL",
+   "img": "17.png",
+   "url": "https://item.rakuten.co.jp/kaminidoramawo/kdr012/",
+   "voices": [
+    "泡がとにかくきめ細かい",
+    "サロンで勧められて買った",
+    "値段が高いって声も"
+   ],
+   "name": "髪にドラマを つるりんちょ シャンプー",
+   "copy": "泡がとにかくきめ細かい"
+  },
+  {
+   "rank": "10位",
+   "brand": "BOTANIST",
+   "product": "ボタニカルシャンプー",
+   "price": "1,540",
+   "size": "490mL",
+   "img": "10.png",
+   "url": "https://item.rakuten.co.jp/kobe-beauty-labo/bota-01/",
+   "voices": [
+    "半プッシュで泡立つ",
+    "限定の香りが毎回楽しみ",
+    "ベタつくって声もある"
+   ],
+   "name": "BOTANIST ボタニカルシャンプー",
+   "copy": "半プッシュで泡立つ"
+  },
+  {
+   "rank": "5位",
+   "brand": "オルナ オーガニック",
+   "product": "シャンプー 詰替",
+   "price": "1,880",
+   "size": "400mL",
+   "img": "5.png",
+   "url": "https://item.rakuten.co.jp/tsurunishi/90xb077ptnj29/",
+   "voices": [
+    "泡立ちがとにかくいい",
+    "何年もリピしてる人が多い",
+    "ちょっと割高って声も"
+   ],
+   "name": "オルナ オーガニック シャンプー 詰替",
+   "copy": "泡立ちがとにかくいい"
+  },
+  {
+   "rank": "1位",
+   "brand": "haru",
+   "product": "kurokami スカルプ 3本セット",
+   "price": "10,302",
+   "size": "400mL×3",
+   "img": "1.png",
+   "url": "https://item.rakuten.co.jp/harushop/harusshampoo003/",
+   "voices": [
+    "リンスがいらない",
+    "香りが3種類から選べる",
+    "きしむって声もある"
+   ],
+   "name": "haru kurokami スカルプ 3本セット",
+   "copy": "リンスがいらない"
+  }
+ ]
+}
