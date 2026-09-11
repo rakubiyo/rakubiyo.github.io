@@ -1,0 +1,87 @@
+{
+  "slug": "donki-cosme",
+  "date": "2026-09-11",
+  "title": "ドンキで売れてたコスメ",
+  "sub": "楽天で買えるやつだけ",
+  "lead": "動画で紹介した8品です。順位は元の記事のまま、楽天に扱いのないものは外しています。",
+  "source": {
+    "name": "ドン・キホーテ売れてるコスメランキング（MAQUIA）",
+    "url": "https://maquia.hpplus.jp/skincare/matome/donki-cosmetics/10/",
+    "period": "2025年8月〜2026年1月の売上です。今の売れ筋順ではありません。"
+  },
+  "price_note": "（メラノCCは2026年4月1日以降の価格）",
+  "items": [
+    {
+      "rank": "10位",
+      "name": "毛穴撫子 お米のマスク 10枚入",
+      "price": "715",
+      "size": "10枚",
+      "copy": "シートが厚くて液たっぷり",
+      "img": "10.png",
+      "url": "https://item.rakuten.co.jp/cosmeticroyal/4992440034713/"
+    },
+    {
+      "rank": "9位",
+      "name": "アヌア アゼライン酸15 インテンスカーミングセラム",
+      "price": "2,581",
+      "size": "30ml",
+      "copy": "少しでよく伸びる",
+      "img": "9.png",
+      "url": "https://item.rakuten.co.jp/anuajapan/anua00114/"
+    },
+    {
+      "rank": "7位",
+      "name": "アヌア レチノール0.3 ナイアシンリニューイングセラム",
+      "price": "2,970",
+      "size": "30ml",
+      "copy": "初レチノールって人も",
+      "img": "7.png",
+      "url": "https://item.rakuten.co.jp/so-netmo/750224119/"
+    },
+    {
+      "rank": "6位",
+      "name": "ビオレ おうちdeエステ マッサージ洗顔ジェル 炭",
+      "price": "878",
+      "size": "200g",
+      "copy": "泡立てずに流すだけ",
+      "img": "6.png",
+      "url": "https://item.rakuten.co.jp/shopypp/3799-004426/"
+    },
+    {
+      "rank": "5位",
+      "name": "アヌア PDRNヒアルロン酸100セラム",
+      "price": "2,970",
+      "size": "30ml",
+      "copy": "しっとり系かと思ったら",
+      "img": "5.png",
+      "url": "https://item.rakuten.co.jp/imbeautycosmetic/110861-0001/"
+    },
+    {
+      "rank": "3位",
+      "name": "メラノCC ディープクリア酵素洗顔",
+      "price": "787",
+      "size": "130g",
+      "copy": "5本以上リピの声",
+      "img": "3.png",
+      "url": "https://item.rakuten.co.jp/24exp/b09py4134y/"
+    },
+    {
+      "rank": "2位",
+      "name": "コーセー メイクキープミスト EX +",
+      "price": "1,430",
+      "size": "80ml",
+      "copy": "これ無いと不安",
+      "img": "2.png",
+      "url": "https://item.rakuten.co.jp/yanagiyacosmestore/57630/"
+    },
+    {
+      "rank": "1位",
+      "name": "ダルバ ホワイトトリュフ ファーストスプレーセラム",
+      "price": "1,430",
+      "size": "50ml",
+      "copy": "お昼のメイク直しに",
+      "img": "1.png",
+      "url": "https://item.rakuten.co.jp/jtradeshop/dalba_sprayserum1/"
+    }
+  ]
+}
