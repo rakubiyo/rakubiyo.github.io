@@ -44,7 +44,7 @@ def post_html(p):
         cards.append(f'''<article class="product-card {'winner' if it['rank']=='1位' else ''}" id="item-{i}">
 <div class="product-top"><div class="product-photo"><span class="rank">{e(it['rank'])}</span>{image(p,it,'../../',i>1)}</div>
 <div class="product-info"><p class="brand">{e(it.get('brand',''))}</p><h2>{words}</h2><p class="size">{e(it['size'])}</p><p class="price">¥{e(it['price'])}<span>税込・出典掲載価格</span></p></div></div>
-<div class="review"><p class="review-label">クチコミの要約</p><ul>{feedback}</ul>{caution_html}</div>
+<div class="review"><p class="review-label">{e(p.get("review_label", "クチコミの要約"))}</p><ul>{feedback}</ul>{caution_html}</div>
 <a class="buy" href="{e(url)}" target="_blank" rel="nofollow sponsored noopener" aria-label="{e(it['name'])}：楽天で価格・在庫を見る（新しいタブ）">楽天で価格・在庫を見る <span aria-hidden="true">↗</span></a>
 <p class="shop-note">販売価格・容量・送料はリンク先でご確認ください</p></article>''')
     omission = f'<p>{e(p["omission_note"])}</p>' if p.get('omission_note') else ''
