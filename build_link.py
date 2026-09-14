@@ -61,7 +61,7 @@ def hub_html(posts):
     if not posts:
         return page('コスメ特集','<section class="hero"><h1>特集を準備しています。</h1></section>')
     latest = posts[0]
-    picks = sorted(latest['items'],key=lambda it:int(re.sub(r'\D','',it['rank'])))[:3]
+    picks = sorted(latest['items'],key=lambda it:int(re.sub(r'\D','',it['rank']) or 99))[:3]
     still = ''.join(image(latest,it,lazy=False) for it in picks)
     entries = []
     for i,p in enumerate(posts):
