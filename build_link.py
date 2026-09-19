@@ -44,7 +44,8 @@ def analytics_head():
 
 
 def analytics_clicks():
-    """楽天へ出ていくリンク（rel に sponsored が付いているもの）のクリックを数える。
+    """楽天・Amazonへ出ていくリンク（rel に sponsored が付いているもの）のクリックを数える。
+       data-shop="amazon" のボタンは amazon_click、それ以外は従来どおり rakuten_click（2026-09-19 Amazon優先）。
        どのページのどの商品から出たかを記録する。タグが無ければ何もしない。"""
     a = SITE.get('analytics') or {}
     if not (a.get('ga4') or '').strip():
@@ -53,8 +54,9 @@ def analytics_clicks():
             "var a=ev.target.closest&&ev.target.closest('a[rel~=\"sponsored\"]');if(!a)return;"
             "var c=a.closest('.product-card');"
             "var nm=c?(c.querySelector('h2,h3')||{}).textContent:a.textContent;"
-            "if(typeof gtag==='function'){gtag('event','rakuten_click',{"
-            "item_name:(nm||'').trim().slice(0,90),"
+            "var shop=a.getAttribute('data-shop')||'rakuten';"
+            "if(typeof gtag==='function'){gtag('event',shop==='amazon'?'amazon_click':'rakuten_click',{"
+            "item_name:(nm||'').trim().slice(0,90),shop:shop,"
             "place:'post',"
             "page_path:location.pathname});}"
             "},true);</script>")
@@ -76,6 +78,14 @@ def analytics_note():
             '個人を特定する情報は集めていません。</p>')
 
 
+def amazon_note():
+    """Amazonアソシエイトの表記（規約で必須の文言）。site.json の amazon_tag が入っているときだけ、楽天の表記と並べて出す。
+       2026-09-19 監督「アフィはAmazonを優先」（半年で3件のノルマ）"""
+    if not (SITE.get('amazon_tag') or '').strip():
+        return ''
+    return '<span class="ad-sep" aria-hidden="true">／</span>Amazonのアソシエイトとして、当サイトは適格販売により収入を得ています。'
+
+
 def page(title, body, path='', cover=''):
     up = '../../' if path else ''
     url = SITE['site_url'].rstrip('/') + '/' + path
@@ -85,7 +95,7 @@ def page(title, body, path='', cover=''):
 <title>{e(title)}｜{e(SITE['name'])}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{e(url)}">
 <meta property="og:type" content="website"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{e(url)}"><meta property="og:image" content="{e(SITE['site_url'])}/{e(cover)}"><meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f8f5f1"><link rel="icon" href="{up}favicon.svg"><link rel="stylesheet" href="{up}style.css">{analytics_head()}
-</head><body><a class="skip" href="#main">本文へ</a><div class="ad"><span>広告</span> 楽天アフィリエイトを利用しています</div>
+</head><body><a class="skip" href="#main">本文へ</a><div class="ad"><span>広告</span> 楽天アフィリエイトを利用しています{amazon_note()}</div>
 <header class="masthead"><a href="{up or './'}" aria-label="らく美容コスメまとめ トップ"><span class="wordmark">mai<span class="dot">.</span></span><span class="mast-sub">らく美容コスメまとめ</span></a><span class="edition">BEAUTY JOURNAL</span></header>
 <main id="main">{body}</main><footer><div class="footer-brand">mai. <span>気になるコスメを、ゆっくり選ぶ。</span></div><details><summary>広告・価格・クチコミについて</summary><p>リンク先で購入されると、紹介料を受け取ることがあります。</p>{notes}</details><p class="copyright">まい ｜ らく美容コスメまとめ</p></footer>{analytics_clicks()}</body></html>'''
 
@@ -100,12 +110,16 @@ def post_html(p):
         feedback = ''.join(f'<li>{e(v)}</li>' for v in positive)
         caution_html = f'<p class="caution"><span>気になる声</span>{e(caution)}</p>' if caution else ''
         url = it.get('affiliate_url') or 'https://hb.afl.rakuten.co.jp/ichiba/'+SITE['aff_id']+'/'+measure_path()+'?'+urlencode({'pc':it['url'],'m':it['url']})
+        # Amazonのリンクがある商品は Amazon を先に出す（2026-09-19 監督「アマゾンが半年でノルマがあるので」）
+        amz = (it.get('amazon_url') or '').strip()
+        amazon_btn = (f'<a class="buy buy-amazon" href="{e(amz)}" data-shop="amazon" target="_blank" rel="nofollow sponsored noopener" '
+                      f'aria-label="{e(it['name'])}：Amazonで見る（新しいタブ）">Amazonで見る <span aria-hidden="true">↗</span></a>') if amz else ''
         words = ''.join(f'<span class="name-part">{e(w)}</span> ' for w in it.get('product', it['name']).split(' '))
         cards.append(f'''<article class="product-card {'winner' if it['rank']=='1位' else ''}" id="item-{i}">
 <div class="product-top"><div class="product-photo"><span class="rank">{e(it['rank'])}</span>{image(p,it,'../../',i>1)}</div>
 <div class="product-info"><p class="brand">{e(it.get('brand',''))}</p><h2>{words}</h2><p class="size">{e(it['size'])}</p><p class="price">¥{e(it['price'])}<span>税込・出典掲載価格</span></p></div></div>
 <div class="review"><p class="review-label">{e(p.get("review_label", "クチコミの要約"))}</p><ul>{feedback}</ul>{caution_html}</div>
-<a class="buy" href="{e(url)}" target="_blank" rel="nofollow sponsored noopener" aria-label="{e(it['name'])}：楽天で価格・在庫を見る（新しいタブ）">楽天で価格・在庫を見る <span aria-hidden="true">↗</span></a>
+{amazon_btn}<a class="buy{' buy-sub' if amazon_btn else ''}" href="{e(url)}" data-shop="rakuten" target="_blank" rel="nofollow sponsored noopener" aria-label="{e(it['name'])}：楽天で価格・在庫を見る（新しいタブ）">楽天で価格・在庫を見る <span aria-hidden="true">↗</span></a>
 <p class="shop-note">販売価格・容量・送料はリンク先でご確認ください</p></article>''')
     omission = f'<p>{e(p["omission_note"])}</p>' if p.get('omission_note') else ''
     src = p['source']
