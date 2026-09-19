@@ -7,6 +7,13 @@ from urllib.parse import urlencode
 
 ROOT = Path(__file__).resolve().parent
 SITE = json.loads((ROOT / 'site.json').read_text(encoding='utf-8'))
+def measure_path():
+    """楽天の計測ID。site.json に入れておくと、リンクが /ichiba/<アフィID>/_RTLinkXXXXXX?pc=... になり、
+       楽天のレポートで「どの媒体から押されたか」が分かるようになる。未設定なら付かない。"""
+    mid = ((SITE.get('analytics') or {}).get('rakuten_measure_id') or '').strip()
+    return mid
+
+
 def e(value):
     return escape(str(value), quote=True)
 
@@ -16,18 +23,71 @@ def image(p, it, prefix='', lazy=True):
     src = derivative if (ROOT / derivative).exists() else base
     return f'<img src="{prefix}{e(src)}" alt="{e(it["name"])}" width="240" height="240" decoding="async" loading="{"lazy" if lazy else "eager"}">'
 
+def analytics_head():
+    """site.json の analytics にIDを入れると、全ページの <head> にタグが入る。
+       未設定（空文字）なら何も出さない。GA4とClarityの両方に対応。"""
+    a = SITE.get('analytics') or {}
+    out = ''
+    ga = (a.get('ga4') or '').strip()
+    if ga:
+        out += (f'<script async src="https://www.googletagmanager.com/gtag/js?id={e(ga)}"></script>'
+                '<script>window.dataLayer=window.dataLayer||[];'
+                'function gtag(){dataLayer.push(arguments)}gtag(\'js\',new Date());'
+                f'gtag(\'config\',\'{e(ga)}\');</script>')
+    cl = (a.get('clarity') or '').strip()
+    if cl:
+        out += ('<script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};'
+                't=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;'
+                'y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);'
+                f'}})(window,document,"clarity","script","{e(cl)}");</script>')
+    return out
+
+
+def analytics_clicks():
+    """楽天へ出ていくリンク（rel に sponsored が付いているもの）のクリックを数える。
+       どのページのどの商品から出たかを記録する。タグが無ければ何もしない。"""
+    a = SITE.get('analytics') or {}
+    if not (a.get('ga4') or '').strip():
+        return ''
+    return ("<script>document.addEventListener('click',function(ev){"
+            "var a=ev.target.closest&&ev.target.closest('a[rel~=\"sponsored\"]');if(!a)return;"
+            "var c=a.closest('.product-card');"
+            "var nm=c?(c.querySelector('h2,h3')||{}).textContent:a.textContent;"
+            "if(typeof gtag==='function'){gtag('event','rakuten_click',{"
+            "item_name:(nm||'').trim().slice(0,90),"
+            "place:'post',"
+            "page_path:location.pathname});}"
+            "},true);</script>")
+
+
+def analytics_note():
+    """解析タグを入れたときだけ、フッターの注意書きに外部送信の一行を足す。"""
+    a = SITE.get('analytics') or {}
+    names = []
+    if (a.get('ga4') or '').strip():
+        names.append('Googleアナリティクス')
+    if (a.get('clarity') or '').strip():
+        names.append('Microsoft Clarity')
+    if not names:
+        return ''
+    return ('<p>このサイトでは、どのページが読まれているかを知るために'
+            + '・'.join(names)
+            + 'を使っています。閲覧されたページなどの情報が、これらの提供元へ送信されます。'
+            '個人を特定する情報は集めていません。</p>')
+
+
 def page(title, body, path='', cover=''):
     up = '../../' if path else ''
     url = SITE['site_url'].rstrip('/') + '/' + path
     desc = '動画で気になったコスメを、クチコミとともに。楽天で買える美容アイテムを回ごとにまとめています。'
-    notes = ''.join(f'<p>{e(n)}</p>' for n in SITE['notes'])
+    notes = ''.join(f'<p>{e(n)}</p>' for n in SITE['notes']) + analytics_note()
     return f'''<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)}｜{e(SITE['name'])}</title><meta name="description" content="{e(desc)}"><link rel="canonical" href="{e(url)}">
 <meta property="og:type" content="website"><meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{e(url)}"><meta property="og:image" content="{e(SITE['site_url'])}/{e(cover)}"><meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#f8f5f1"><link rel="icon" href="{up}favicon.svg"><link rel="stylesheet" href="{up}style.css">
+<meta name="theme-color" content="#f8f5f1"><link rel="icon" href="{up}favicon.svg"><link rel="stylesheet" href="{up}style.css">{analytics_head()}
 </head><body><a class="skip" href="#main">本文へ</a><div class="ad"><span>広告</span> 楽天アフィリエイトを利用しています</div>
 <header class="masthead"><a href="{up or './'}" aria-label="らく美容コスメまとめ トップ"><span class="wordmark">mai<span class="dot">.</span></span><span class="mast-sub">らく美容コスメまとめ</span></a><span class="edition">BEAUTY JOURNAL</span></header>
-<main id="main">{body}</main><footer><div class="footer-brand">mai. <span>気になるコスメを、ゆっくり選ぶ。</span></div><details><summary>広告・価格・クチコミについて</summary><p>リンク先で購入されると、紹介料を受け取ることがあります。</p>{notes}</details><p class="copyright">まい ｜ らく美容コスメまとめ</p></footer></body></html>'''
+<main id="main">{body}</main><footer><div class="footer-brand">mai. <span>気になるコスメを、ゆっくり選ぶ。</span></div><details><summary>広告・価格・クチコミについて</summary><p>リンク先で購入されると、紹介料を受け取ることがあります。</p>{notes}</details><p class="copyright">まい ｜ らく美容コスメまとめ</p></footer>{analytics_clicks()}</body></html>'''
 
 def post_html(p):
     items = p['items']
@@ -39,7 +99,7 @@ def post_html(p):
         caution = voices[-1] if len(voices)>1 else ''
         feedback = ''.join(f'<li>{e(v)}</li>' for v in positive)
         caution_html = f'<p class="caution"><span>気になる声</span>{e(caution)}</p>' if caution else ''
-        url = it.get('affiliate_url') or 'https://hb.afl.rakuten.co.jp/ichiba/'+SITE['aff_id']+'/?'+urlencode({'pc':it['url'],'m':it['url']})
+        url = it.get('affiliate_url') or 'https://hb.afl.rakuten.co.jp/ichiba/'+SITE['aff_id']+'/'+measure_path()+'?'+urlencode({'pc':it['url'],'m':it['url']})
         words = ''.join(f'<span class="name-part">{e(w)}</span> ' for w in it.get('product', it['name']).split(' '))
         cards.append(f'''<article class="product-card {'winner' if it['rank']=='1位' else ''}" id="item-{i}">
 <div class="product-top"><div class="product-photo"><span class="rank">{e(it['rank'])}</span>{image(p,it,'../../',i>1)}</div>
